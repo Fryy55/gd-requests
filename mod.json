@@ -1,0 +1,22 @@
+{
+	"geode": "4.7.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "fryy_55.gd-requests",
+	"name": "GD Requests",
+	"version": "v1.0.0",
+	"developer": "Fryy_55",
+	"description": "A handy interface for creating GD requests",
+	"tags": [
+		"online",
+		"utility"
+	],
+	"links": {
+		"source": "https://github.com/Fryy55/gd-requests",
+		"community": "https://discord.com/invite/4vqtjfdhTk"
+	}
+}
