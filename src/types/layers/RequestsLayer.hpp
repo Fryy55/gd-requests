@@ -13,4 +13,7 @@ private:
 
 	void keyBackClicked() override { onBack(); }
 	void onBack() { cocos2d::CCDirector::get()->popSceneWithTransition(0.5f, cocos2d::PopTransition::kPopTransitionFade); }
+
+public:
+	~RequestsLayer() override;
 };

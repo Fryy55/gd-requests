@@ -21,9 +21,13 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 target_include_directories(${PROJECT_NAME}
     PRIVATE
+        ${SRC_DIR}/events
         ${SRC_DIR}/types
+        ${SRC_DIR}/types/cells
         ${SRC_DIR}/types/general-purpose
         ${SRC_DIR}/types/layers
+        ${SRC_DIR}/types/popups
+        ${SRC_DIR}/types/singletons
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})

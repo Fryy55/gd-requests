@@ -2,6 +2,7 @@
 
 #include "QuickNotification.hpp"
 #include "Padding.hpp"
+#include "AddCellEvent.hpp"
 
 using namespace geode::prelude;
 
@@ -123,7 +124,18 @@ bool ParametersArea::init() {
 }
 
 void ParametersArea::onAdd(CCObject*) {
+	auto key = m_keyInput->getString();
+	auto value = m_valueInput->getString();
 
+	if (key == "") {
+		QuickNotification::create("Key can't be empty!", NotificationIcon::Error, 0.5f)->show();
+		return;
+	} else if (value == "") {
+		QuickNotification::create("Value can't be empty!", NotificationIcon::Error, 0.5f)->show();
+		return;
+	}
+
+	AddCellEvent(std::move(key), std::move(value)).post();
 
 	return;
 }

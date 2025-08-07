@@ -11,6 +11,14 @@
 	"version": "v1.0.0",
 	"developer": "Fryy_55",
 	"description": "A handy interface for creating GD requests",
+	"settings": {
+		"debug-label": {
+			"type": "bool",
+			"name": "Debug Label",
+			"description": "Puts the parameters count into <cc>debug mode</c>.\nShows (children/logged database instances).",
+			"default": false
+		}
+	},
 	"tags": [
 		"online",
 		"utility"

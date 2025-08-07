@@ -81,7 +81,7 @@ bool ResponseArea::init() {
 
 
 
-	auto separator = Separator::create({ 255, 255, 255 }, 80.f, 280.f);
+	auto separator = Separator::create({ 255, 255, 255 }, 80.f, 300.f);
 	separator->setOpacity(100);
 	separator->setID("separator");
 	this->addChildAtPosition(separator, Anchor::Center, { 0.f, 44.f });

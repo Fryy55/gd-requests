@@ -3,6 +3,7 @@
 #include "ResponseArea.hpp"
 #include "ParametersArea.hpp"
 #include "ParametersList.hpp"
+#include "RequestsManager.hpp"
 
 using namespace geode::prelude;
 
@@ -34,6 +35,7 @@ bool RequestsLayer::init() {
 		return false;
 
 	this->setKeypadEnabled(true);
+	RequestsManager::get()->init();
 	auto winSize = CCDirector::get()->getWinSize();
 
 
@@ -46,6 +48,7 @@ bool RequestsLayer::init() {
 
 	addSideArt(this);
 	this->getChildByID("side-art-bottom-left")->setZOrder(3);
+	this->getChildByID("side-art-bottom-right")->setZOrder(3);
 
 
 	auto backMenu = CCMenu::create();
@@ -91,22 +94,26 @@ bool RequestsLayer::init() {
 
 
 	auto responseArea = ResponseArea::create();
-	responseArea->setPosition(245.f, 22.f);
+	responseArea->setPosition(260.f, 22.f);
 	responseArea->setID("response-area");
 	this->addChild(responseArea);
 
 
 
 	auto paramArea = ParametersArea::create();
-	paramArea->setPosition(18.f, 212.f);
+	paramArea->setPosition(23.f, 212.f);
 	paramArea->setID("parameters-area");
 	this->addChild(paramArea);
 
 
 	auto paramList = ParametersList::create();
-	paramList->setPosition(128.f, 105.f);
+	paramList->setPosition(133.f, 105.f);
 	paramList->setID("parameters-list");
 	this->addChild(paramList);
 
 	return true;
+}
+
+RequestsLayer::~RequestsLayer() {
+	RequestsManager::get()->kill();
 }
