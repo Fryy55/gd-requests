@@ -4,6 +4,8 @@
 #include "Padding.hpp"
 #include "utils.hpp"
 #include "Separator.hpp"
+#include "QuickNotification.hpp"
+#include "RequestsManager.hpp"
 
 using namespace geode::prelude;
 
@@ -38,10 +40,10 @@ bool ResponseArea::init() {
 
 	constexpr float padding = 25.f;
 
-	auto endpointInput = TextInput::create(s_contentSize.width - padding, "Endpoint (/...)");
-	endpointInput->setFilter(constants::urlFilter);
-	endpointInput->setID("endpoint-input");
-	this->addChildAtPosition(endpointInput, Anchor::Top, { 0.f, -25.f });
+	m_endpointInput = TextInput::create(s_contentSize.width - padding, "Endpoint");
+	m_endpointInput->setFilter(constants::urlFilter);
+	m_endpointInput->setID("endpoint-input");
+	this->addChildAtPosition(m_endpointInput, Anchor::Top, { 0.f, -25.f });
 
 
 	auto endpointMenu = CCMenu::create();
@@ -60,6 +62,11 @@ bool ResponseArea::init() {
 	);
 	sendBtn->setID("send-button");
 	endpointMenu->addChild(sendBtn);
+
+	m_loadingCircle = LoadingSpinner::create(20.f);
+	m_loadingCircle->setVisible(false);
+	m_loadingCircle->setID("loading-circle");
+	endpointMenu->addChild(m_loadingCircle);
 
 	endpointMenu->addChild(Padding::create(130.f));
 
@@ -96,8 +103,8 @@ bool ResponseArea::init() {
 	clearBtnSpr->setScale(0.6f);
 	auto clearBtn = CCMenuItemExt::createSpriteExtra(
 		clearBtnSpr,
-		[endpointInput](CCMenuItemSpriteExtra*) {
-			endpointInput->setString("");
+		[this](CCMenuItemSpriteExtra*) {
+			m_endpointInput->setString("");
 		}
 	);
 	clearBtn->setID("clear-button");
@@ -120,18 +127,64 @@ bool ResponseArea::init() {
 	this->addChildAtPosition(responseLabel, Anchor::Left, { 60.f, 32.5f });
 
 
-	auto responseField = MDTextArea::create(
+	m_responseField = MDTextArea::create(
 		"<c-707070>Response will appear here...</c>",
-		{ s_contentSize.width - padding, 130.f }
+		{ s_contentSize.width - padding, 130.f },
+		true
 	);
-	responseField->setID("response-field");
-	this->addChildAtPosition(responseField, Anchor::Bottom, { 0.f, 75.f });
+	m_responseField->setID("response-field");
+	this->addChildAtPosition(m_responseField, Anchor::Bottom, { 0.f, 75.f });
 
 	return true;
 }
 
 void ResponseArea::onSend(CCObject*) {
+	auto endpoint = m_endpointInput->getString();
 
+	if (!req::utils::validateString(endpoint, req::utils::StringType::Endpoint))
+		return;
+
+	if (m_reqMutex) {
+		QuickNotification::create("A request is already processing!", NotificationIcon::Error)->show();
+		return;
+	}
+	m_reqMutex = true;
+	m_loadingCircle->setVisible(true);
+
+	std::string bodyString = "";
+	bool firstParam = true;
+
+	for (auto const& [key, value] : *RequestsManager::get()->getDB()) {
+		bodyString.append(
+			fmt::format(
+				"{}{}={}",
+				firstParam ? "" : "&",
+				key,
+				value
+			)
+		);
+
+		firstParam = false;
+	}
+
+	m_requestListener.setFilter(
+		web::WebRequest()
+			.bodyString(bodyString)
+			.post(std::string("https://www.boomlings.com/database/").append(m_endpointInput->getString()))
+	);
+
+	return;
+}
+
+void ResponseArea::onRequest(web::WebTask::Event* event) {
+	if (auto res = event->getValue()) {
+		m_responseField->setString(res->string().unwrapOr(res->errorMessage()).c_str());
+
+		m_loadingCircle->setVisible(false);
+		m_reqMutex = false;
+	} else if (event->isCancelled()) {
+		log::info("Request cancelled.");
+	}
 
 	return;
 }
