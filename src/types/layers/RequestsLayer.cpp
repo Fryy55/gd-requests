@@ -3,7 +3,6 @@
 #include "ResponseArea.hpp"
 #include "ParametersArea.hpp"
 #include "ParametersList.hpp"
-#include "RequestsManager.hpp"
 
 using namespace geode::prelude;
 
@@ -35,7 +34,6 @@ bool RequestsLayer::init() {
 		return false;
 
 	this->setKeypadEnabled(true);
-	RequestsManager::get()->init();
 	auto winSize = CCDirector::get()->getWinSize();
 
 
@@ -112,8 +110,4 @@ bool RequestsLayer::init() {
 	this->addChild(paramList);
 
 	return true;
-}
-
-RequestsLayer::~RequestsLayer() {
-	RequestsManager::get()->kill();
 }

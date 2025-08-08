@@ -85,6 +85,12 @@ bool ParametersList::init() {
 	resetMenu->addChild(resetBtn);
 
 
+
+	// add children if db has them on init
+	for (auto const& [key, value] : *RequestsManager::get()->getDB())
+		m_scrollLayer->m_contentLayer->addChild(ParameterCell::create(key, value, s_contentSize.width));
+
+
 	this->updateState();
 
 	return true;
