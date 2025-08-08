@@ -1,5 +1,6 @@
 #include "RequestsLayer.hpp"
 
+#include "RequestsManager.hpp"
 #include "ResponseArea.hpp"
 #include "ParametersArea.hpp"
 #include "ParametersList.hpp"
@@ -33,6 +34,7 @@ bool RequestsLayer::init() {
 	if (!CCLayer::init())
 		return false;
 
+	RequestsManager::get()->updateDebugLabelSetting();
 	this->setKeypadEnabled(true);
 	auto winSize = CCDirector::get()->getWinSize();
 

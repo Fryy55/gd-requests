@@ -11,7 +11,7 @@ RequestsManager* RequestsManager::get() {
 
 RequestsManager::RequestsManager() {
 	m_db = new std::unordered_map<std::string, std::string>;
-	m_debugLabel = Mod::get()->getSettingValue<bool>("debug-label");
+	updateDebugLabelSetting();
 
 	log::info("Manager initialized.");
 }
