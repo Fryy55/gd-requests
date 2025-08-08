@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <Geode/ui/TextInput.hpp>
 
 
 namespace req::utils {
@@ -15,4 +15,6 @@ namespace req::utils {
 		StringType type,
 		std::optional<std::string_view> oldKey = std::nullopt
 	);
+
+	void pasteClipboard(geode::TextInput* textInput);
 }

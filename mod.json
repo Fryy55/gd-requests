@@ -11,18 +11,19 @@
 	"version": "v1.0.0",
 	"developer": "Fryy_55",
 	"description": "A handy interface for creating GD requests",
+	"resources": {
+		"spritesheets": {
+			"UISheet": [
+				"resources/sheets/ui/*.png"
+			]
+		}
+	},
 	"settings": {
 		"debug-label": {
 			"type": "bool",
 			"name": "Debug Label",
 			"description": "Puts the parameters count into <cc>debug mode</c>.\nShows (children/logged database instances).",
 			"default": false
-		},
-		"text-sanitizing": {
-			"type": "bool",
-			"name": "Text Sanitizing",
-			"description": "Enables text sanitizing for key, value and endpoint input fields.\nIf disabled, improves performance (especially for big strings), but <cr>can lead to unexpected behavior if you have character bypass</c>!",
-			"default": true
 		}
 	},
 	"tags": [

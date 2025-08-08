@@ -54,18 +54,23 @@ bool req::utils::validateString(
 		return false;
 	} while (false);
 
-	if (RequestsManager::get()->getSanitizeTextSetting()) {
-		for (auto c : string) {
-			if (filter.find(c) == std::string::npos) {
-				QuickNotification::create(
-					fmt::format("Forbidden character: {}", c),
-					NotificationIcon::Error,
-					0.5f
-				)->show();
-				return false;
-			}
+	for (auto c : string) {
+		if (!string::contains(filter, c)) {
+			QuickNotification::create(
+				fmt::format("Forbidden character: \"{}\"", c),
+				NotificationIcon::Error,
+				0.5f
+			)->show();
+			return false;
 		}
 	}
 
 	return true;
+}
+
+void req::utils::pasteClipboard(TextInput* textInput) {
+	textInput->setString(clipboard::read());
+	QuickNotification::create("Clipboard pasted.", NotificationIcon::None, 0.5f)->show();
+
+	return;
 }

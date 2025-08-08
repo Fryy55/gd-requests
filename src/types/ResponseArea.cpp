@@ -1,8 +1,9 @@
 #include "ResponseArea.hpp"
 
 #include "constants.hpp"
-#include "Separator.hpp"
+#include "Padding.hpp"
 #include "utils.hpp"
+#include "Separator.hpp"
 
 using namespace geode::prelude;
 
@@ -44,12 +45,13 @@ bool ResponseArea::init() {
 
 
 	auto endpointMenu = CCMenu::create();
-	endpointMenu->setLayout(RowLayout::create()->setGap(10.f));
+	endpointMenu->setLayout(RowLayout::create());
 	endpointMenu->setContentWidth(s_contentSize.width - padding);
 	endpointMenu->setID("endpoint-menu");
 	this->addChildAtPosition(endpointMenu, Anchor::Top, { 0.f, -57.5f });
 
-	auto sendBtnSpr = ButtonSprite::create("Send", "bigFont.fnt", "GJ_button_04.png");
+
+	auto sendBtnSpr = ButtonSprite::create("Send", "bigFont.fnt", "GJ_button_05.png");
 	sendBtnSpr->setScale(0.65f);
 	auto sendBtn = CCMenuItemSpriteExtra::create(
 		sendBtnSpr,
@@ -58,6 +60,28 @@ bool ResponseArea::init() {
 	);
 	sendBtn->setID("send-button");
 	endpointMenu->addChild(sendBtn);
+
+	endpointMenu->addChild(Padding::create(130.f));
+
+	auto pasteBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_paste.png"_spr);
+	auto pasteBtnSpr = ButtonSprite::create(
+		pasteBtnTopSpr,
+		40.f,
+		true,
+		40.f,
+		"GJ_button_04.png",
+		1.f
+	);
+	pasteBtnTopSpr->setScale(1.2f);
+	pasteBtnSpr->setScale(0.6f);
+	auto pasteBtn = CCMenuItemExt::createSpriteExtra(
+		pasteBtnSpr,
+		[this](CCMenuItemSpriteExtra*) {
+			req::utils::pasteClipboard(m_endpointInput);
+		}
+	);
+	pasteBtn->setID("paste-button");
+	endpointMenu->addChild(pasteBtn);
 
 	auto clearBtnTopSpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
 	auto clearBtnSpr = ButtonSprite::create(

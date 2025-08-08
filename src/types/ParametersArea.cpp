@@ -1,8 +1,10 @@
 #include "ParametersArea.hpp"
 
+#include <Geode/ui/Layout.hpp>
+
 #include "QuickNotification.hpp"
-#include "Padding.hpp"
 #include "constants.hpp"
+#include "utils.hpp"
 
 using namespace geode::prelude;
 
@@ -38,7 +40,7 @@ bool ParametersArea::init() {
 	constexpr float padding = 25.f;
 
 	auto menu = CCMenu::create();
-	menu->setLayout(RowLayout::create());
+	menu->setLayout(RowLayout::create()->setGap(25.f));
 	menu->setContentWidth(s_contentSize.width - padding);
 	menu->setID("menu");
 	this->addChildAtPosition(menu, Anchor::Center);
@@ -61,44 +63,103 @@ bool ParametersArea::init() {
 	menu->addChild(commonSecretBtn);
 
 
-	menu->addChild(Padding::create(7.5f));
+	auto inputMenu = CCMenu::create();
+	inputMenu->setLayout(RowLayout::create()->setGrowCrossAxis(true));
+	inputMenu->setContentWidth(175.f);
+	inputMenu->setID("input-menu");
+	menu->addChild(inputMenu);
 
-
-	m_keyInput = TextInput::create(60.f, "Key");
+	m_keyInput = TextInput::create(120.f, "Key");
 	m_keyInput->setCommonFilter(CommonFilter::Alphanumeric);
 	m_keyInput->setID("key-input");
-	menu->addChild(m_keyInput);
+	inputMenu->addChild(m_keyInput);
 
-
-	auto clearBtnTopSpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
-	auto clearBtnSpr = ButtonSprite::create(
-		clearBtnTopSpr,
+	auto pasteKeyBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_paste.png"_spr);
+	auto pasteKeyBtnSpr = ButtonSprite::create(
+		pasteKeyBtnTopSpr,
 		40.f,
 		true,
 		40.f,
 		"GJ_button_04.png",
 		1.f
 	);
-	clearBtnTopSpr->setPositionY(20.f);
-	clearBtnSpr->setScale(0.6f);
-	auto clearBtn = CCMenuItemExt::createSpriteExtra(
-		clearBtnSpr,
+	pasteKeyBtnTopSpr->setScale(1.2f);
+	pasteKeyBtnSpr->setScale(0.6f);
+	auto pasteKeyBtn = CCMenuItemExt::createSpriteExtra(
+		pasteKeyBtnSpr,
+		[this](CCMenuItemSpriteExtra*) {
+			req::utils::pasteClipboard(m_keyInput);
+		}
+	);
+	pasteKeyBtn->setID("paste-key-button");
+	inputMenu->addChild(pasteKeyBtn);
+
+	auto clearKeyBtnTopSpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
+	auto clearKeyBtnSpr = ButtonSprite::create(
+		clearKeyBtnTopSpr,
+		40.f,
+		true,
+		40.f,
+		"GJ_button_04.png",
+		1.f
+	);
+	clearKeyBtnTopSpr->setPositionY(20.f);
+	clearKeyBtnSpr->setScale(0.6f);
+	auto clearKeyBtn = CCMenuItemExt::createSpriteExtra(
+		clearKeyBtnSpr,
 		[this](CCMenuItemSpriteExtra*) {
 			m_keyInput->setString("");
+		}
+	);
+	clearKeyBtn->setID("clear-key-button");
+	inputMenu->addChild(clearKeyBtn);
+
+	m_valueInput = TextInput::create(120.f, "Value");
+	m_valueInput->setFilter(constants::valueFilter);
+	m_valueInput->setID("value-input");
+	inputMenu->addChild(m_valueInput);
+
+	auto pasteValueBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_paste.png"_spr);
+	auto pasteValueBtnSpr = ButtonSprite::create(
+		pasteValueBtnTopSpr,
+		40.f,
+		true,
+		40.f,
+		"GJ_button_04.png",
+		1.f
+	);
+	pasteValueBtnTopSpr->setScale(1.2f);
+	pasteValueBtnSpr->setScale(0.6f);
+	auto pasteValueBtn = CCMenuItemExt::createSpriteExtra(
+		pasteValueBtnSpr,
+		[this](CCMenuItemSpriteExtra*) {
+			req::utils::pasteClipboard(m_valueInput);
+		}
+	);
+	pasteValueBtn->setID("paste-value-button");
+	inputMenu->addChild(pasteValueBtn);
+
+	auto clearValueBtnTopSpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
+	auto clearValueBtnSpr = ButtonSprite::create(
+		clearValueBtnTopSpr,
+		40.f,
+		true,
+		40.f,
+		"GJ_button_04.png",
+		1.f
+	);
+	clearValueBtnTopSpr->setPositionY(20.f);
+	clearValueBtnSpr->setScale(0.6f);
+	auto clearValueBtn = CCMenuItemExt::createSpriteExtra(
+		clearValueBtnSpr,
+		[this](CCMenuItemSpriteExtra*) {
 			m_valueInput->setString("");
 		}
 	);
-	clearBtn->setID("clear-button");
-	menu->addChild(clearBtn);
+	clearValueBtn->setID("clear-value-button");
+	inputMenu->addChild(clearValueBtn);
 
-
-	m_valueInput = TextInput::create(60.f, "Value");
-	m_valueInput->setFilter(constants::valueFilter);
-	m_valueInput->setID("value-input");
-	menu->addChild(m_valueInput);
-
-
-	menu->addChild(Padding::create(7.5f));
+	inputMenu->updateLayout();
 
 
 	auto addBtnSpr = ButtonSprite::create(

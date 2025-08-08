@@ -18,7 +18,6 @@ RequestsManager::RequestsManager() {
 
 void RequestsManager::updateSettings() {
 	m_debugLabel = Mod::get()->getSettingValue<bool>("debug-label");
-	m_sanitizeText = Mod::get()->getSettingValue<bool>("text-sanitizing");
 
 	return;
 }
