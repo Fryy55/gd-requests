@@ -2,6 +2,8 @@
 
 #include <Geode/cocos/base_nodes/CCNode.h>
 
+#include "AddCellEvent.hpp"
+
 
 class ParametersArea final : public cocos2d::CCNode {
 public:
@@ -10,7 +12,7 @@ public:
 private:
 	bool init() override;
 
-	void onAdd(cocos2d::CCObject*);
+	void onAdd(cocos2d::CCObject*) { AddCellEvent(m_keyInput->getString(), m_valueInput->getString()).post(); }
 
 	// Fields
 	geode::TextInput* m_keyInput;

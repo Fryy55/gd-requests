@@ -1,6 +1,7 @@
 #include "EditParameterPopup.hpp"
 
-#include "QuickNotification.hpp"
+#include "constants.hpp"
+#include "utils.hpp"
 #include "RequestsManager.hpp"
 
 using namespace geode::prelude;
@@ -71,7 +72,7 @@ bool EditParameterPopup::setup(ParameterCell* cell) {
 	m_mainLayer->addChildAtPosition(keyLabel, Anchor::Left, { 40.f, keyLabelY });
 
 	m_keyInput = TextInput::create(180.f, "Key");
-	m_keyInput->setCommonFilter(CommonFilter::Any);
+	m_keyInput->setCommonFilter(CommonFilter::Alphanumeric);
 	m_keyInput->setString(m_keyField->getText());
 	m_keyInput->setID("key-input");
 	menu->addChildAtPosition(m_keyInput, Anchor::Left, { 100.f, keyLabelY - 28.f });
@@ -105,7 +106,7 @@ bool EditParameterPopup::setup(ParameterCell* cell) {
 	m_mainLayer->addChildAtPosition(valueLabel, Anchor::BottomLeft, { 50.f, valueLabelY });
 
 	m_valueInput = TextInput::create(180.f, "Value");
-	m_valueInput->setCommonFilter(CommonFilter::Any);
+	m_valueInput->setFilter(constants::valueFilter);
 	m_valueInput->setString(m_valueField->getText());
 	m_valueInput->setID("value-input");
 	menu->addChildAtPosition(m_valueInput, Anchor::BottomLeft, { 100.f, valueLabelY - 28.f });
@@ -151,20 +152,14 @@ void EditParameterPopup::onConfirm(CCObject*) {
 	auto value = m_valueInput->getString();
 	auto oldKey = m_keyField->getText();
 
-	if (key == "") {
-		QuickNotification::create("Key can't be empty!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	} else if (value == "") {
-		QuickNotification::create("Value can't be empty!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	}
+	if (
+		!req::utils::validateString(key, req::utils::StringType::Key, oldKey)
+		||
+		!req::utils::validateString(value, req::utils::StringType::Value, oldKey)
+	) return;
+
 
 	auto db = RequestsManager::get()->getDB();
-	if (db->contains(key) && key != oldKey) {
-		QuickNotification::create("Key already exists!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	}
-
 
 	m_keyField->setText(key);
 	m_valueField->setText(value);

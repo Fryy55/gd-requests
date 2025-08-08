@@ -3,7 +3,7 @@
 #include "ScrollBorders.hpp"
 #include "ParameterCell.hpp"
 #include "RequestsManager.hpp"
-#include "QuickNotification.hpp"
+#include "utils.hpp"
 
 using namespace geode::prelude;
 
@@ -97,13 +97,13 @@ bool ParametersList::init() {
 }
 
 void ParametersList::addCell(std::string const& key, std::string const& value) {
-	auto db = RequestsManager::get()->getDB();
-	if (db->contains(key)) {
-		QuickNotification::create("Key already exists!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	}
+	if (
+		!req::utils::validateString(key, req::utils::StringType::Key)
+		||
+		!req::utils::validateString(value, req::utils::StringType::Value)
+	) return;
 
-	db->insert({ key, value });
+	RequestsManager::get()->getDB()->insert({ key, value });
 	m_scrollLayer->m_contentLayer->addChild(ParameterCell::create(key, value, s_contentSize.width));
 
 	this->updateState();

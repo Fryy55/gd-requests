@@ -2,7 +2,7 @@
 
 #include "QuickNotification.hpp"
 #include "Padding.hpp"
-#include "AddCellEvent.hpp"
+#include "constants.hpp"
 
 using namespace geode::prelude;
 
@@ -65,7 +65,7 @@ bool ParametersArea::init() {
 
 
 	m_keyInput = TextInput::create(60.f, "Key");
-	m_keyInput->setCommonFilter(CommonFilter::Any);
+	m_keyInput->setCommonFilter(CommonFilter::Alphanumeric);
 	m_keyInput->setID("key-input");
 	menu->addChild(m_keyInput);
 
@@ -93,7 +93,7 @@ bool ParametersArea::init() {
 
 
 	m_valueInput = TextInput::create(60.f, "Value");
-	m_valueInput->setCommonFilter(CommonFilter::Any);
+	m_valueInput->setFilter(constants::valueFilter);
 	m_valueInput->setID("value-input");
 	menu->addChild(m_valueInput);
 
@@ -121,21 +121,4 @@ bool ParametersArea::init() {
 	menu->updateLayout();
 
 	return true;
-}
-
-void ParametersArea::onAdd(CCObject*) {
-	auto key = m_keyInput->getString();
-	auto value = m_valueInput->getString();
-
-	if (key == "") {
-		QuickNotification::create("Key can't be empty!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	} else if (value == "") {
-		QuickNotification::create("Value can't be empty!", NotificationIcon::Error, 0.5f)->show();
-		return;
-	}
-
-	AddCellEvent(std::move(key), std::move(value)).post();
-
-	return;
 }

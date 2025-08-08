@@ -34,7 +34,7 @@ bool RequestsLayer::init() {
 	if (!CCLayer::init())
 		return false;
 
-	RequestsManager::get()->updateDebugLabelSetting();
+	RequestsManager::get()->updateSettings();
 	this->setKeypadEnabled(true);
 	auto winSize = CCDirector::get()->getWinSize();
 

@@ -1,6 +1,8 @@
 #include "ResponseArea.hpp"
 
+#include "constants.hpp"
 #include "Separator.hpp"
+#include "utils.hpp"
 
 using namespace geode::prelude;
 
@@ -36,7 +38,7 @@ bool ResponseArea::init() {
 	constexpr float padding = 25.f;
 
 	auto endpointInput = TextInput::create(s_contentSize.width - padding, "Endpoint (/...)");
-	endpointInput->setCommonFilter(CommonFilter::Any);
+	endpointInput->setFilter(constants::urlFilter);
 	endpointInput->setID("endpoint-input");
 	this->addChildAtPosition(endpointInput, Anchor::Top, { 0.f, -25.f });
 
