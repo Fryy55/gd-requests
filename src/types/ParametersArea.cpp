@@ -2,7 +2,7 @@
 
 #include <Geode/ui/Layout.hpp>
 
-#include "QuickNotification.hpp"
+#include "SelectSecretPopup.hpp"
 #include "constants.hpp"
 #include "utils.hpp"
 
@@ -46,21 +46,18 @@ bool ParametersArea::init() {
 	this->addChildAtPosition(menu, Anchor::Center);
 
 
-	auto commonSecretBtn = CCMenuItemExt::createSpriteExtra(
+	auto secretBtn = CCMenuItemExt::createSpriteExtra(
 		ButtonSprite::create(
 			"?",
 			"bigFont.fnt",
 			"GJ_button_05.png"
 		),
 		[this](CCMenuItemSpriteExtra*) {
-			QuickNotification::create("Common secret pasted.", NotificationIcon::None, 0.5f)->show();
-
-			m_keyInput->setString("secret");
-			m_valueInput->setString("Wmfd2893gb7");
+			SelectSecretPopup::create(m_keyInput, m_valueInput)->show();
 		}
 	);
-	commonSecretBtn->setID("common-secret-button");
-	menu->addChild(commonSecretBtn);
+	secretBtn->setID("secret-button");
+	menu->addChild(secretBtn);
 
 
 	auto inputMenu = CCMenu::create();
