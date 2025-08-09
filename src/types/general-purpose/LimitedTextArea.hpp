@@ -25,8 +25,8 @@ private:
 	);
 
 public:
-	void setText(std::string const& text);
 	[[nodiscard]] std::string const& getText() const { return m_text; }
+	void setText(std::string const& text);
 
 	void setContentSize(cocos2d::CCSize const& size) override;
 	void setContentWidth(float width) { setContentSize({ width, getContentHeight() }); }

@@ -2,6 +2,8 @@
 
 #include <Geode/cocos/base_nodes/CCNode.h>
 
+#include "ScrollTextArea.hpp"
+
 
 class ResponseArea final : public cocos2d::CCNode {
 public:
@@ -17,7 +19,7 @@ private:
 	geode::TextInput* m_endpointInput;
 	geode::LoadingSpinner* m_loadingCircle;
 	bool m_reqMutex = false;
-	geode::MDTextArea* m_responseField;
+	ScrollTextArea* m_responseField;
 	geode::EventListener<geode::utils::web::WebTask> m_requestListener { this, &ResponseArea::onRequest };
 
 	static constexpr cocos2d::CCSize s_contentSize { 290.f, 240.f };

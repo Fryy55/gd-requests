@@ -127,10 +127,9 @@ bool ResponseArea::init() {
 	this->addChildAtPosition(responseLabel, Anchor::Left, { 60.f, 32.5f });
 
 
-	m_responseField = MDTextArea::create(
+	m_responseField = ScrollTextArea::create(
 		"<c-707070>Response will appear here...</c>",
-		{ s_contentSize.width - padding, 130.f },
-		true
+		{ s_contentSize.width - padding, 130.f }
 	);
 	m_responseField->setID("response-field");
 	this->addChildAtPosition(m_responseField, Anchor::Bottom, { 0.f, 75.f });
@@ -178,7 +177,7 @@ void ResponseArea::onSend(CCObject*) {
 
 void ResponseArea::onRequest(web::WebTask::Event* event) {
 	if (auto res = event->getValue()) {
-		m_responseField->setString(res->string().unwrapOr(res->errorMessage()).c_str());
+		m_responseField->setText(res->string().unwrapOr(res->errorMessage()));
 
 		m_loadingCircle->setVisible(false);
 		m_reqMutex = false;
