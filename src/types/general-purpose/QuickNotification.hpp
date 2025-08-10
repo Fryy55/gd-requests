@@ -20,6 +20,10 @@ public:
 private:
 	bool init(std::string const&, cocos2d::CCSprite*, float);
 
+	cocos2d::CCLabelBMFont* parseText(std::string const&);
+	std::string collectTag(std::size_t, std::string const&);
+	cocos2d::ccColor3B colorForTag(std::string const& tag);
+
 public:
 	void show();
 	void hide();

@@ -119,11 +119,12 @@ void ScrollTextArea::parseAndRenderText() {
 	std::string buffer = "";
 
 	for (std::size_t i = 0u; i < m_text.size(); ++i) {
-		if (m_text.at(i) == '<') {
+		char c = m_text.at(i);
+		if (c == '<') {
 			m_textRenderer->renderString(buffer);
 			buffer.clear();
 
-			if (m_text.at(i + 1) == 'c') {
+			if (char c1 = m_text.at(i + 1); c1 == 'c') {
 				auto tag = collectTag(i);
 				m_textRenderer->pushColor(colorForTag(tag));
 
@@ -135,7 +136,7 @@ void ScrollTextArea::parseAndRenderText() {
 				i += tag.size() + 2;
 
 				continue; // skip adding anything to the buffer
-			} else if (auto tag = collectTag(i); m_text.at(i + 1) == '/' && tag == "c") {
+			} else if (auto tag = collectTag(i); c1 == '/' && tag == "c") {
 				m_textRenderer->popColor();
 
 				// v
@@ -150,7 +151,7 @@ void ScrollTextArea::parseAndRenderText() {
 		}
 
 		// only executes when tag isn't a color tag or when there's no tag things in general i think
-		buffer.append(1, m_text.at(i));
+		buffer.append(1, c);
 	}
 
 	m_textRenderer->renderString(buffer);
