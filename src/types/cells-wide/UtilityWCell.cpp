@@ -1,5 +1,6 @@
 #include "UtilityWCell.hpp"
 
+#include "RequestsManager.hpp"
 #include "QuickNotification.hpp"
 
 using namespace geode::prelude;
@@ -18,19 +19,19 @@ UtilityWCell* UtilityWCell::create(Utility utility) {
 }
 
 bool UtilityWCell::init(Utility utility) {
-	auto bg = CCScale9Sprite::create("square02b_001.png");
-	bg->setContentSize(s_contentSize);
+	m_bg = CCScale9Sprite::create("square02b_001.png");
+	m_bg->setContentSize(s_contentSize);
 	if (!CCMenuItemSpriteExtra::init(
-		bg, nullptr,
+		m_bg, nullptr,
 		this, nullptr
 	)) return false;
 
 	m_utility = utility;
 
 	// bg init related stuff
-	bg->setColor({ 0, 0, 0 });
-	bg->setOpacity(90);
-	bg->setID("background");
+	m_bg->setColor({ 0, 0, 0 });
+	m_bg->setOpacity(90);
+	m_bg->setID("background");
 
 	// CCMISE init related stuff
 	m_scaleMultiplier = 0.975f;
@@ -38,34 +39,42 @@ bool UtilityWCell::init(Utility utility) {
 
 
 	char const* utilityName;
-	char const* utilitySprFN;
+	CCSprite* utilitySpr;
 	float utilitySprScale = 1.f;
 
 	switch (m_utility) {
 		case GJP2:
 			utilityName = "GJP2";
-			utilitySprFN = "GJLargeLock_001.png";
+			utilitySpr = CCSprite::createWithSpriteFrameName("GJLargeLock_001.png");
 			utilitySprScale = 0.8f;
+			break;
+
+		case LevelString:
+			utilityName = "Level String";
+			utilitySpr = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
+			utilitySprScale = 1.5f;
+
+			updateLevelStringBGColor(RequestsManager::get()->getCopyLevelStringValue());
 			break;
 
 		default:
 			utilityName = "UNKNOWN";
-			utilitySprFN = "GJ_deleteIcon_001.png";
+			utilitySpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
 			utilitySprScale = 2.f;
 			break;
 	}
 
-	this->setID(fmt::format("{}-utility", string::toLower(utilityName)));
+	std::string utilityID = utilityName;
+	this->setID(fmt::format("{}-utility", nameToID(utilityID)));
 
 	auto nameLabel = CCLabelBMFont::create(utilityName, "bigFont.fnt");
 	nameLabel->limitLabelWidth(s_contentSize.width - 10.f, 1.f, 0.1f);
 	nameLabel->setID("name-label");
 	this->addChildAtPosition(nameLabel, Anchor::Top, { 0.f, -15.f });
 
-	auto infoSpr = CCSprite::createWithSpriteFrameName(utilitySprFN);
-	infoSpr->setScale(utilitySprScale);
-	infoSpr->setID("info-sprite");
-	this->addChildAtPosition(infoSpr, Anchor::Center, { 0.f, -10.f });
+	utilitySpr->setScale(utilitySprScale);
+	utilitySpr->setID("info-sprite");
+	this->addChildAtPosition(utilitySpr, Anchor::Center, { 0.f, -10.f });
 
 	return true;
 }
@@ -76,13 +85,26 @@ void UtilityWCell::onClick(CCObject*) {
 			clipboard::write(GJAccountManager::get()->m_GJP2);
 
 			QuickNotification::create(
-				"  GJP2 copied to clipboard.\n"
-				"  <cr>Don't show it to anyone - this is your encrypted password!</c>",
+				" GJP2 copied to clipboard.\n"
+				" <cr>Don't show it to anyone - this is your encrypted password!</c>",
 				NotificationIcon::Info,
 				1.5f
 			)->show();
-
 			break;
+
+		case LevelString: {
+			bool enabled = RequestsManager::get()->toggleCopyLevelString();
+			updateLevelStringBGColor(enabled);
+
+			QuickNotification::create(
+				fmt::format(
+					"{} level string <cf>copy</c> button in level menus.",
+					enabled ? "Enabled" : "Disabled"
+				),
+				NotificationIcon::Info,
+				1.5f
+			)->show();
+		} break;
 
 		default:
 			QuickNotification::create(
@@ -91,9 +113,19 @@ void UtilityWCell::onClick(CCObject*) {
 				"  the developer (Fryy_55).",
 				NotificationIcon::Error, 1.5f
 			)->show();
-
 			break;
 	}
+
+	return;
+}
+
+std::string& UtilityWCell::nameToID(std::string& str) const {
+	string::replaceIP(str, " ", "-");
+
+	return string::toLowerIP(str);
+}
+void UtilityWCell::updateLevelStringBGColor(bool enabled) {
+	m_bg->setColor(enabled ? ccc3(0, 255, 0) : ccc3(0, 0, 0));
 
 	return;
 }

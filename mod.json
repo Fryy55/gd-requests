@@ -33,5 +33,11 @@
 	"links": {
 		"source": "https://github.com/Fryy55/gd-requests",
 		"community": "https://discord.com/invite/4vqtjfdhTk"
+	},
+	"dependencies": {
+		"geode.node-ids": {
+			"version": ">=v1.20.1",
+			"importance": "required"
+		}
 	}
 }

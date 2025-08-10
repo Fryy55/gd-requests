@@ -13,7 +13,17 @@ RequestsManager::RequestsManager() {
 	m_db = new std::unordered_map<std::string, std::string>;
 	updateSettings();
 
+	m_copyLevelString = Mod::get()->getSavedValue<bool>("copy-level-string");
+
 	log::info("Manager initialized.");
+}
+
+bool RequestsManager::toggleCopyLevelString() {
+	m_copyLevelString = !m_copyLevelString;
+
+	Mod::get()->setSavedValue("copy-level-string", m_copyLevelString);
+
+	return m_copyLevelString;
 }
 
 void RequestsManager::updateSettings() {

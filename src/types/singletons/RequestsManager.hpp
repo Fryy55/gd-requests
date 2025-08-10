@@ -15,6 +15,9 @@ private:
 public:
 	[[nodiscard]] std::unordered_map<std::string, std::string>* getDB() const { return m_db; }
 	[[nodiscard]] bool getDebugLabelSetting() const { return m_debugLabel; }
+	[[nodiscard]] bool getCopyLevelStringValue() const { return m_copyLevelString; }
+	bool toggleCopyLevelString();
+
 	void updateSettings();
 
 	RequestsManager(RequestsManager const&) = delete;
@@ -26,4 +29,5 @@ private:
 	// Fields
 	std::unordered_map<std::string, std::string>* m_db;
 	bool m_debugLabel;
+	bool m_copyLevelString;
 };
