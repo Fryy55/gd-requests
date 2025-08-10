@@ -1,6 +1,7 @@
 #include "RequestsLayer.hpp"
 
 #include "RequestsManager.hpp"
+#include "UtilsPopup.hpp"
 #include "ResponseArea.hpp"
 #include "ParametersArea.hpp"
 #include "ParametersList.hpp"
@@ -74,12 +75,28 @@ bool RequestsLayer::init() {
 	this->addChild(title);
 
 
-	auto gdDocsMenu = CCMenu::create();
-	gdDocsMenu->setPosition(0.f, 0.f);
-	gdDocsMenu->setID("gd-docs-menu");
-	this->addChild(gdDocsMenu);
+	auto helpMenu = CCMenu::create();
+	helpMenu->setPosition(0.f, 0.f);
+	helpMenu->setID("help-menu");
+	this->addChild(helpMenu);
 
-	auto gdDocsBtnSpr = ButtonSprite::create("GDDocs", "bigFont.fnt", "GJ_button_02.png");
+	int const helpButtonsWidth = 110;
+	float const helpButtonsY = winSize.height - 26.f;
+	float const helpButtonsXOffset = 120.f;
+
+	auto utilsBtnSpr = ButtonSprite::create("Utils", helpButtonsWidth, 0, 1.f, true, "bigFont.fnt", "GJ_button_02.png");
+	utilsBtnSpr->setScale(0.5f);
+	auto utilsBtn = CCMenuItemExt::createSpriteExtra(
+		utilsBtnSpr,
+		[](CCMenuItemSpriteExtra*) {
+			UtilsPopup::create()->show();
+		}
+	);
+	utilsBtn->setPosition(winSize.width / 2.f - helpButtonsXOffset, helpButtonsY);
+	utilsBtn->setID("utils-button");
+	helpMenu->addChild(utilsBtn);
+
+	auto gdDocsBtnSpr = ButtonSprite::create("GDDocs", helpButtonsWidth, 0, 1.f, true, "bigFont.fnt", "GJ_button_02.png");
 	gdDocsBtnSpr->setScale(0.5f);
 	auto gdDocsBtn = CCMenuItemExt::createSpriteExtra(
 		gdDocsBtnSpr,
@@ -87,9 +104,9 @@ bool RequestsLayer::init() {
 			web::openLinkInBrowser("https://wyliemaster.github.io/gddocs");
 		}
 	);
-	gdDocsBtn->setPosition(winSize.width - 160.f, winSize.height - 26.f);
+	gdDocsBtn->setPosition(winSize.width / 2.f + helpButtonsXOffset, helpButtonsY);
 	gdDocsBtn->setID("gd-docs-button");
-	gdDocsMenu->addChild(gdDocsBtn);
+	helpMenu->addChild(gdDocsBtn);
 
 
 

@@ -25,6 +25,7 @@ target_include_directories(${PROJECT_NAME}
         ${SRC_DIR}/events
         ${SRC_DIR}/types
         ${SRC_DIR}/types/cells
+        ${SRC_DIR}/types/cells-wide
         ${SRC_DIR}/types/general-purpose
         ${SRC_DIR}/types/layers
         ${SRC_DIR}/types/popups
