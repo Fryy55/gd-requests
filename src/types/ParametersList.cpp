@@ -150,9 +150,11 @@ void ParametersList::onReset(CCObject*) {
 		"Are you sure you want to clear <cr>all</c> parameters?",
 		"Cancel", "Yes",
 		[this](auto, bool yes) {
-			if (yes && m_scrollLayer->m_contentLayer->getChildrenCount()) { // iteration over a shallow copy crashes if there's 0 objs idk why
-				for (auto cell : CCArrayExt<ParameterCell>(m_scrollLayer->m_contentLayer->getChildren()->shallowCopy()))
-					cell->onDelete(nullptr);
+			if (yes) {
+				m_scrollLayer->m_contentLayer->removeAllChildren();
+				RequestsManager::get()->getDB()->clear();
+
+				updateState();
 			}
 		}
 	);
