@@ -102,7 +102,6 @@ CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 
 	// color the thing
 	for (auto& [begin, end, color] : colors) {
-		log::debug("{} {} {}", begin, end, color);
 		for (; begin < end; ++begin) {
 			if (begin < lettersCount)
 				letters[begin]->setColor(color);
