@@ -106,9 +106,8 @@ CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 				if (tag != "c")
 					goto skip; // safe equivalent of `c1 == '/' && tag == "c"` in `if`
 
-				if (colorsStack.empty())
-					return nullptr;
-				popColor();
+				if (!colorsStack.empty())
+					popColor();
 
 				// v
 				// </c>
@@ -163,6 +162,7 @@ std::optional<std::string> QuickNotification::collectTag(std::size_t curPos, std
 ccColor3B QuickNotification::colorForTag(std::string const& tag) {
 	// tags are passed like "l", "f", "-ff00ff" etc
 
+	// substr will throw otherwise
 	if (!tag.size())
 		return { 255, 255, 255 };
 
