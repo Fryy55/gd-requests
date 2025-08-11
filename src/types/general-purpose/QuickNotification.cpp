@@ -1,5 +1,7 @@
 #include "QuickNotification.hpp"
 
+#include <stack>
+
 using namespace geode::prelude;
 
 
@@ -36,10 +38,9 @@ bool QuickNotification::init(std::string const& text, CCSprite* icon, float time
 
 	m_icon = icon;
 
-	try {
-		m_label = parseText(text);
-	} catch (...) {
-		m_label = parseText("<cr>Failed to parse text.</c>"); // this won't throw TRUST :pray:
+	m_label = parseText(text);
+	if (!m_label) {
+		m_label = parseText("<cr>Failed to parse text.</c>"); // this won't nullptr TRUST :pray:
 		m_icon = createIcon(NotificationIcon::Error);
 	}
 
@@ -50,7 +51,7 @@ bool QuickNotification::init(std::string const& text, CCSprite* icon, float time
 		m_bg->addChild(m_icon);
 	}
 
-	this->setScale(.75f);
+	this->setScale(0.75f);
 	this->updateLayout();
 
 	return true;
@@ -59,14 +60,34 @@ bool QuickNotification::init(std::string const& text, CCSprite* icon, float time
 CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 	std::string resultStr = "";
 	std::size_t labelSize = 0u;
-	std::vector<std::tuple<std::size_t, std::size_t, cocos2d::ccColor3B>> colors{};
+	std::size_t stringSize = string.size();
 
-	for (std::size_t i = 0u; i < string.size(); ++i) {
-		char c = string.at(i);
+	std::deque<std::tuple<std::size_t, std::size_t, ccColor3B>> colors{};
+	std::stack<std::pair<std::size_t, ccColor3B>> colorsStack{};
+
+	auto pushColor = [&colorsStack, &labelSize](ccColor3B const& color) {
+		colorsStack.emplace(labelSize, color);
+	};
+
+	//! before calling check if stack is empty
+	auto popColor = [&colorsStack, &labelSize, &colors]() {
+		colors.emplace_front(colorsStack.top().first, labelSize, colorsStack.top().second);
+		colorsStack.pop();
+	};
+
+	for (std::size_t i = 0u; i < stringSize; ++i) {
+		char c = string[i];
 		if (c == '<') {
-			if (char c1 = string.at(i + 1); c1 == 'c') {
-				auto tag = collectTag(i, string);
-				colors.emplace_back(labelSize, 0u, colorForTag(tag));
+			if (i + 1 >= stringSize)
+				return nullptr;
+
+			if (char c1 = string[i + 1]; c1 == 'c') {
+				auto tagOpt = collectTag(i, string);
+				if (!tagOpt)
+					return nullptr;
+				auto const& tag = tagOpt.value();
+
+				pushColor(colorForTag(tag));
 
 				// v
 				// <cg>
@@ -75,9 +96,19 @@ CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 				// 0 + 1 + *2* = 3 ('>'), 4 on next iteration
 				i += tag.size() + 2;
 
-				continue; // skip adding anything to the buffer
-			} else if (auto tag = collectTag(i, string); c1 == '/' && tag == "c") {
-				std::get<1>(colors.at(colors.size() - 1)) = labelSize;
+				continue; // skip adding anything to the result
+			} else if (auto tagOpt = collectTag(i, string); c1 == '/') {
+				if (!tagOpt)
+					return nullptr;
+
+				auto const& tag = tagOpt.value();
+
+				if (tag != "c")
+					goto skip; // safe equivalent of `c1 == '/' && tag == "c"` in `if`
+
+				if (colorsStack.empty())
+					return nullptr;
+				popColor();
 
 				// v
 				// </c>
@@ -86,24 +117,24 @@ CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 				// 0 + 1 + *2* = 3 ('>'), 4 on next iteration
 				i += tag.size() + 2;
 
-				continue; // skip adding anything to the buffer
+				continue; // skip adding anything to the result
 			}
 		}
+		skip:
 
 		// only executes when tag isn't a color tag or when there's no tag things in general i think
 		if (c != '\n')
 			++labelSize;
-		resultStr.append(1, string.at(i));
+		resultStr.append(1, c);
 	}
 
 	auto label = CCLabelBMFont::create(resultStr.c_str(), "bigFont.fnt");
 	auto letters = CCArrayExt<CCFontSprite*>(label->getChildren());
-	auto lettersCount = letters.size();
 
 	// color the thing
 	for (auto& [begin, end, color] : colors) {
 		for (; begin < end; ++begin) {
-			if (begin < lettersCount)
+			if (begin < labelSize)
 				letters[begin]->setColor(color);
 		}
 	}
@@ -111,10 +142,19 @@ CCLabelBMFont* QuickNotification::parseText(std::string const& string) {
 	return label;
 }
 
-std::string QuickNotification::collectTag(std::size_t curPos, std::string const& string) {
+std::optional<std::string> QuickNotification::collectTag(std::size_t curPos, std::string const& string) {
 	std::string colorTag = "";
-	for (std::size_t offset = 2u; string.at(curPos + offset) != '>'; ++offset) {
-		colorTag.append(1, string.at(curPos + offset));
+	auto stringSize = string.size();
+
+	for (std::size_t offset = 2u;; ++offset) {
+		if (curPos + offset >= stringSize)
+			return std::nullopt;
+
+		// replace the `for` condition
+		if (auto c = string[curPos + offset]; c == '>')
+			break;
+		else
+			colorTag.append(1, c);
 	};
 
 	return colorTag;
@@ -122,6 +162,9 @@ std::string QuickNotification::collectTag(std::size_t curPos, std::string const&
 
 ccColor3B QuickNotification::colorForTag(std::string const& tag) {
 	// tags are passed like "l", "f", "-ff00ff" etc
+
+	if (!tag.size())
+		return { 255, 255, 255 };
 
 	// check for base tags
 	if (tag == "b")
@@ -182,7 +225,7 @@ void QuickNotification::hide() {
 		CCCallFunc::create(this, callfunc_selector(QuickNotification::animateOut)),
 		// wait for fade-out to finish
 		CCDelayTime::create(1.f),
-		CCCallFunc::create(this, callfunc_selector(QuickNotification::showNextNotification)),
+		CCCallFunc::create(this, callfunc_selector(QuickNotification::kill)),
 		nullptr
 	));
 
@@ -202,7 +245,7 @@ void QuickNotification::wait() {
 	return;
 }
 
-void QuickNotification::showNextNotification() {
+void QuickNotification::kill() {
 	m_showing = false;
 
 	SceneManager::get()->forget(this);
