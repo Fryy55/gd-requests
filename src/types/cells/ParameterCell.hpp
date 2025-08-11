@@ -17,10 +17,10 @@ public:
 	void setBGColor(bool dark) { this->setOpacity(dark ? 60 : 20); }
 	[[nodiscard]] std::pair<LimitedTextArea*, LimitedTextArea*> getFields() const { return { m_keyField, m_valueField }; }
 
-	void onDelete(cocos2d::CCObject*);
-
 private:
 	void onEdit(cocos2d::CCObject*);
+
+	void onDelete(cocos2d::CCObject*);
 
 	// Fields
 	LimitedTextArea* m_keyField;

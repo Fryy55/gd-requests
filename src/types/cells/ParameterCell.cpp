@@ -89,6 +89,12 @@ bool ParameterCell::init(std::string const& key, std::string const& value, float
 	return true;
 }
 
+void ParameterCell::onEdit(CCObject*) {
+	EditParameterPopup::create(this)->show();
+
+	return;
+}
+
 void ParameterCell::onDelete(CCObject*) {
 	RequestsManager::get()->getDB()->erase(m_keyField->getText());
 	this->removeFromParent();
@@ -97,9 +103,3 @@ void ParameterCell::onDelete(CCObject*) {
 
 	return;
 }
-
-void ParameterCell::onEdit(CCObject*) {
-	EditParameterPopup::create(this)->show();
-
-	return;
-}	
