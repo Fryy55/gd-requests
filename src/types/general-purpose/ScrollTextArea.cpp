@@ -87,9 +87,7 @@ void ScrollTextArea::updateLabel() {
 	m_textRenderer->pushBMFont(m_font);
 	m_textRenderer->pushScale(m_fontScale);
 
-	try {
-		this->parseAndRenderText();
-	} catch (...) {
+	if (!this->parseAndRenderText()) {
 		m_textRenderer->end();
 
 		this->setText("<cr>Failed to parse text.</c>"); // it will not recurse trust :pray:
@@ -115,17 +113,25 @@ void ScrollTextArea::updateLabel() {
 	return;
 }
 
-void ScrollTextArea::parseAndRenderText() {
+bool ScrollTextArea::parseAndRenderText() {
 	std::string buffer = "";
+	std::size_t textSize = m_text.size();
 
-	for (std::size_t i = 0u; i < m_text.size(); ++i) {
-		char c = m_text.at(i);
+	for (std::size_t i = 0u; i < textSize; ++i) {
+		char c = m_text[i];
 		if (c == '<') {
+			if (i + 1 >= textSize)
+				return false;
+
 			m_textRenderer->renderString(buffer);
 			buffer.clear();
 
-			if (char c1 = m_text.at(i + 1); c1 == 'c') {
-				auto tag = collectTag(i);
+			if (char c1 = m_text[i + 1]; c1 == 'c') {
+				auto tagOpt = collectTag(i);
+				if (!tagOpt)
+					return false;
+				auto const& tag = tagOpt.value();
+
 				m_textRenderer->pushColor(colorForTag(tag));
 
 				// v
@@ -136,7 +142,15 @@ void ScrollTextArea::parseAndRenderText() {
 				i += tag.size() + 2;
 
 				continue; // skip adding anything to the buffer
-			} else if (auto tag = collectTag(i); c1 == '/' && tag == "c") {
+			} else if (auto tagOpt = collectTag(i); c1 == '/') {
+				if (!tagOpt)
+					return false;
+
+				auto const& tag = tagOpt.value();
+
+				if (tag != "c")
+					goto skip; // safe equivalent of `c1 == '/' && tag == "c"` in `if`
+
 				m_textRenderer->popColor();
 
 				// v
@@ -149,6 +163,7 @@ void ScrollTextArea::parseAndRenderText() {
 				continue; // skip adding anything to the buffer
 			}
 		}
+		skip:
 
 		// only executes when tag isn't a color tag or when there's no tag things in general i think
 		buffer.append(1, c);
@@ -156,13 +171,22 @@ void ScrollTextArea::parseAndRenderText() {
 
 	m_textRenderer->renderString(buffer);
 
-	return;
+	return true;
 }
 
-std::string ScrollTextArea::collectTag(std::size_t curPos) {
+std::optional<std::string> ScrollTextArea::collectTag(std::size_t curPos) {
 	std::string colorTag = "";
-	for (std::size_t offset = 2u; m_text.at(curPos + offset) != '>'; ++offset) {
-		colorTag.append(1, m_text.at(curPos + offset));
+	auto textSize = m_text.size();
+
+	for (std::size_t offset = 2u;; ++offset) {
+		if (curPos + offset >= textSize)
+			return std::nullopt;
+
+		// replace the `for` condition
+		if (auto c = m_text[curPos + offset]; c == '>')
+			break;
+		else
+			colorTag.append(1, c);
 	};
 
 	return colorTag;
@@ -170,6 +194,10 @@ std::string ScrollTextArea::collectTag(std::size_t curPos) {
 
 ccColor3B ScrollTextArea::colorForTag(std::string const& tag) {
 	// tags are passed like "l", "f", "-ff00ff" etc
+
+	// substr will throw otherwise
+	if (!tag.size())
+		return { 255, 255, 255 };
 
 	// check for base tags
 	if (tag == "b")

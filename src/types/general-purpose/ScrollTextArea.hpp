@@ -36,9 +36,8 @@ public:
 	void updateLabel();
 
 private:
-	// ok i added `at`s we're cool
-	void parseAndRenderText();
-	std::string collectTag(std::size_t);
+	bool parseAndRenderText();
+	std::optional<std::string> collectTag(std::size_t);
 	cocos2d::ccColor3B colorForTag(std::string const&);
 
 	// Fields
