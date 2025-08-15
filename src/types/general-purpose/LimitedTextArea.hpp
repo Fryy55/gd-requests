@@ -10,7 +10,7 @@ public:
 		std::string const& text,
 		std::size_t charLimit = 16,
 		char const* font = "bigFont.fnt",
-		cocos2d::CCPoint const& textOffset = { 0.f, 0.f },
+		cocos2d::CCPoint const& textOffset = { 0.f, 2.f },
 		cocos2d::ccColor4B const& bgColor = { 0, 0, 0, 90 }
 	);
 

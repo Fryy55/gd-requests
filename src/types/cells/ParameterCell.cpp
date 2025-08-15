@@ -33,7 +33,7 @@ bool ParameterCell::init(std::string const& key, std::string const& value, float
 	this->addChildAtPosition(keyLabel, Anchor::TopLeft, { 25.f, -7.f });
 
 
-	m_keyField = LimitedTextArea::create({ 82.5f, 30.f }, key, 12, "bigFont.fnt", { 0.f, 2.f });
+	m_keyField = LimitedTextArea::create({ 82.5f, 30.f }, key, 12);
 	m_keyField->setScale(0.67f);
 	m_keyField->setID("key-field");
 	this->addChildAtPosition(m_keyField, Anchor::BottomLeft, { 13.f, 1.5f });
@@ -46,7 +46,7 @@ bool ParameterCell::init(std::string const& key, std::string const& value, float
 	this->addChildAtPosition(valueLabel, Anchor::TopLeft, { 95.f, -7.f });
 
 
-	m_valueField = LimitedTextArea::create({ 82.5f, 30.f }, value, 12, "bigFont.fnt", { 0.f, 2.f });
+	m_valueField = LimitedTextArea::create({ 82.5f, 30.f }, value, 12);
 	m_valueField->setScale(0.67f);
 	m_valueField->setID("value-field");
 	this->addChildAtPosition(m_valueField, Anchor::BottomLeft, { 78.f, 1.5f });
