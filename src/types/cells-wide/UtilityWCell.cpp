@@ -124,6 +124,7 @@ std::string& UtilityWCell::nameToID(std::string& str) const {
 
 	return string::toLowerIP(str);
 }
+
 void UtilityWCell::updateLevelStringBGColor(bool enabled) {
 	m_bg->setColor(enabled ? ccc3(0, 255, 0) : ccc3(0, 0, 0));
 
