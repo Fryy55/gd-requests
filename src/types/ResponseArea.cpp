@@ -1,11 +1,11 @@
 #include "ResponseArea.hpp"
 
+#include "RequestsManager.hpp"
 #include "constants.hpp"
 #include "Padding.hpp"
 #include "utils.hpp"
 #include "Separator.hpp"
 #include "QuickNotification.hpp"
-#include "RequestsManager.hpp"
 
 using namespace geode::prelude;
 
@@ -20,6 +20,10 @@ ResponseArea* ResponseArea::create() {
 
 	delete ret;
 	return nullptr;
+}
+
+ResponseArea::~ResponseArea() {
+	RequestsManager::get()->setEndpoint(m_endpointInput->getString());
 }
 
 bool ResponseArea::init() {
@@ -41,6 +45,7 @@ bool ResponseArea::init() {
 	constexpr float padding = 25.f;
 
 	m_endpointInput = TextInput::create(s_contentSize.width - padding, "Endpoint");
+	m_endpointInput->setString(RequestsManager::get()->getEndpoint());
 	m_endpointInput->setFilter(constants::urlFilter);
 	m_endpointInput->setID("endpoint-input");
 	this->addChildAtPosition(m_endpointInput, Anchor::Top, { 0.f, -25.f });

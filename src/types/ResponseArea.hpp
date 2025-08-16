@@ -9,6 +9,8 @@ class ResponseArea final : public cocos2d::CCNode {
 public:
 	static ResponseArea* create();
 
+	~ResponseArea() override;
+
 private:
 	bool init() override;
 

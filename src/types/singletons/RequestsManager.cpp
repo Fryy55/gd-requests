@@ -11,6 +11,7 @@ RequestsManager* RequestsManager::get() {
 
 RequestsManager::RequestsManager() {
 	m_db = new std::unordered_map<std::string, std::string>;
+	m_endpoint = "";
 	updateSettings();
 
 	m_copyLevelString = Mod::get()->getSavedValue<bool>("copy-level-string");
