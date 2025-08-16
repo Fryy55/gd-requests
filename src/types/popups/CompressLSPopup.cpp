@@ -78,7 +78,7 @@ bool CompressLSPopup::setup() {
 
 
 
-	constexpr float clsY = -30.f;
+	constexpr float clsY = 12.f;
 
 	auto clsField = LimitedTextArea::create(
 		{ 180.f, 30.f },
@@ -89,7 +89,7 @@ bool CompressLSPopup::setup() {
 	);
 	clsField->getLabel()->setColor({ 100, 100, 100 });
 	clsField->setID("level-string-field");
-	m_mainLayer->addChildAtPosition(clsField, Anchor::Left, { 10.f, clsY });
+	m_mainLayer->addChildAtPosition(clsField, Anchor::BottomLeft, { 10.f, clsY });
 
 	auto copyBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_copy.png"_spr);
 	auto copyBtnSpr = ButtonSprite::create(
@@ -119,7 +119,7 @@ bool CompressLSPopup::setup() {
 	copyBtn->setID("copy-cls-button");
 	menu->addChildAtPosition(
 		copyBtn,
-		Anchor::Right,
+		Anchor::BottomRight,
 		{ -20.f, clsField->getContentHeight() / 2.f + clsY }
 	);
 
@@ -127,7 +127,7 @@ bool CompressLSPopup::setup() {
 
 	auto compressBtnSpr = ButtonSprite::create(
 		"Compress",
-		90, 0,
+		160, 0,
 		1.f, true,
 		"bigFont.fnt",
 		"GJ_button_01.png"
@@ -149,7 +149,7 @@ bool CompressLSPopup::setup() {
 		}
 	);
 	compressBtn->setID("compress-button");
-	menu->addChildAtPosition(compressBtn, Anchor::Bottom, { 0.f, 27.5f });
+	menu->addChildAtPosition(compressBtn, Anchor::Center, { 0.f, -14.f });
 
 	return true;
 }
