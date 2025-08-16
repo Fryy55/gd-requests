@@ -27,6 +27,7 @@ private:
 public:
 	[[nodiscard]] std::string const& getText() const { return m_text; }
 	void setText(std::string const& text);
+	[[nodiscard]] cocos2d::CCLabelBMFont* getLabel() const { return m_textLabel; }
 
 	void setContentSize(cocos2d::CCSize const& size) override;
 	void setContentWidth(float width) { setContentSize({ width, getContentHeight() }); }
