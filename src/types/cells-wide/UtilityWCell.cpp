@@ -4,6 +4,7 @@
 #include "QuickNotification.hpp"
 #include "CompressLSPopup.hpp"
 #include "Seed2Popup.hpp"
+#include "Base64URLPopup.hpp"
 
 using namespace geode::prelude;
 
@@ -47,13 +48,13 @@ bool UtilityWCell::init(Utility utility) {
 		case GJP2:
 			utilityName = "GJP2";
 			utilitySpr = CCSprite::createWithSpriteFrameName("GJLargeLock_001.png");
-			utilitySpr->setScale(0.8f);
+			utilitySpr->setScale(0.6f);
 			break;
 
 		case LevelString:
 			utilityName = "Level String";
 			utilitySpr = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
-			utilitySpr->setScale(1.5f);
+			utilitySpr->setScale(1.3f);
 
 			updateLevelStringBGColor(RequestsManager::get()->getCopyLevelStringValue());
 			break;
@@ -61,11 +62,11 @@ bool UtilityWCell::init(Utility utility) {
 		case CompressLS: {
 			utilityName = "Compress\nLevel String";
 			utilitySpr = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
-			utilitySpr->setScale(1.5f);
+			utilitySpr->setScale(1.3f);
 			
 			auto lockSpr = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
 			lockSpr->CCNode::setPosition(33.f, 5.f);
-			lockSpr->setScale(0.5f);
+			lockSpr->setScale(0.4f);
 			utilitySpr->addChild(lockSpr);
 		} break;
 
@@ -73,6 +74,12 @@ bool UtilityWCell::init(Utility utility) {
 			utilityName = "Seed2";
 			utilitySpr = CCSprite::createWithSpriteFrameName("GJ_hammerIcon_001.png");
 			utilitySpr->setScale(1.75f);
+			break;
+
+		case Base64URL:
+			utilityName = "Base64 URL";
+			utilitySpr = CCSprite::createWithSpriteFrameName("gj_linkBtn_001.png");
+			utilitySpr->setScale(1.5f);
 			break;
 
 		default:
@@ -129,6 +136,10 @@ void UtilityWCell::onClick(CCObject*) {
 
 		case Seed2:
 			Seed2Popup::create()->show();
+			break;
+
+		case Base64URL:
+			Base64URLPopup::create()->show();
 			break;
 
 		default:

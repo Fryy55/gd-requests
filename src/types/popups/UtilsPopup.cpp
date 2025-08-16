@@ -41,6 +41,7 @@ bool UtilsPopup::setup() {
 	menu->addChild(UtilityWCell::create(UtilityWCell::LevelString));
 	menu->addChild(UtilityWCell::create(UtilityWCell::CompressLS));
 	menu->addChild(UtilityWCell::create(UtilityWCell::Seed2));
+	menu->addChild(UtilityWCell::create(UtilityWCell::Base64URL));
 
 	menu->updateLayout();
 

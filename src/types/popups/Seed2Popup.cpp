@@ -38,7 +38,7 @@ bool Seed2Popup::setup() {
 
 
 
-	constexpr float clY = 10.f;
+	constexpr float clsY = 10.f;
 
 	auto clsField = LimitedTextArea::create(
 		{ 180.f, 30.f },
@@ -49,7 +49,7 @@ bool Seed2Popup::setup() {
 	);
 	clsField->getLabel()->setColor({ 100, 100, 100 });
 	clsField->setID("compressed-level-string-field");
-	m_mainLayer->addChildAtPosition(clsField, Anchor::Left, { 10.f, clY });
+	m_mainLayer->addChildAtPosition(clsField, Anchor::Left, { 10.f, clsY });
 
 	auto pasteBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_paste.png"_spr);
 	auto pasteBtnSpr = ButtonSprite::create(
@@ -73,12 +73,12 @@ bool Seed2Popup::setup() {
 	menu->addChildAtPosition(
 		pasteBtn,
 		Anchor::Right,
-		{ -20.f, clsField->getContentHeight() / 2.f + clY }
+		{ -20.f, clsField->getContentHeight() / 2.f + clsY }
 	);
 
 
 
-	constexpr float clsY = 12.f;
+	constexpr float seed2Y = 12.f;
 
 	auto seed2Field = LimitedTextArea::create(
 		{ 180.f, 30.f },
@@ -89,7 +89,7 @@ bool Seed2Popup::setup() {
 	);
 	seed2Field->getLabel()->setColor({ 100, 100, 100 });
 	seed2Field->setID("seed2-field");
-	m_mainLayer->addChildAtPosition(seed2Field, Anchor::BottomLeft, { 10.f, clsY });
+	m_mainLayer->addChildAtPosition(seed2Field, Anchor::BottomLeft, { 10.f, seed2Y });
 
 	auto copyBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_copy.png"_spr);
 	auto copyBtnSpr = ButtonSprite::create(
@@ -120,7 +120,7 @@ bool Seed2Popup::setup() {
 	menu->addChildAtPosition(
 		copyBtn,
 		Anchor::BottomRight,
-		{ -20.f, seed2Field->getContentHeight() / 2.f + clsY }
+		{ -20.f, seed2Field->getContentHeight() / 2.f + seed2Y }
 	);
 
 

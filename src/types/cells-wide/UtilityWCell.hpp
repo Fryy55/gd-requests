@@ -9,7 +9,8 @@ public:
 		GJP2,
 		LevelString,
 		CompressLS,
-		Seed2
+		Seed2,
+		Base64URL
 	};
 
 	static UtilityWCell* create(Utility utility);
