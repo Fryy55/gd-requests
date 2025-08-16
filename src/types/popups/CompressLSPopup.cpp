@@ -151,5 +151,19 @@ bool CompressLSPopup::setup() {
 	compressBtn->setID("compress-button");
 	menu->addChildAtPosition(compressBtn, Anchor::Center, { 0.f, -14.f });
 
+	if (!Mod::get()->setSavedValue("shown-cls-base64-tip", true)) {
+		auto alert = FLAlertLayer::create(
+			"Base64 Encoding",
+			"Hey there!\n"
+			"Keep in mind, that aside from gzip-compressing the level string, this utility "
+			"also <cf>URL-safe Base64 encodes it</c>! This means that after you compress the "
+			"string, you <cr>don't</c> need to encode it for it to be accepted in parameters "
+			"like levelString in /uploadGJLevel21.php",
+			"OK"
+		);
+		alert->m_scene = this;
+		alert->show();
+	}
+
 	return true;
 }
