@@ -27,6 +27,7 @@ bool UtilsPopup::setup() {
 	menu->setLayout(
 		RowLayout::create()
 			->setGrowCrossAxis(true)
+			->setCrossAxisOverflow(false)
 	);
 	menu->setContentSize(
 		{ m_mainLayer->getContentWidth() - 20.f, m_mainLayer->getContentHeight() - 50.f }
