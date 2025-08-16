@@ -8,7 +8,8 @@ public:
 	enum Utility : std::uint8_t {
 		GJP2,
 		LevelString,
-		CompressLS
+		CompressLS,
+		Seed2
 	};
 
 	static UtilityWCell* create(Utility utility);

@@ -3,6 +3,7 @@
 #include "RequestsManager.hpp"
 #include "QuickNotification.hpp"
 #include "CompressLSPopup.hpp"
+#include "Seed2Popup.hpp"
 
 using namespace geode::prelude;
 
@@ -68,6 +69,12 @@ bool UtilityWCell::init(Utility utility) {
 			utilitySpr->addChild(lockSpr);
 		} break;
 
+		case Seed2:
+			utilityName = "Seed2";
+			utilitySpr = CCSprite::createWithSpriteFrameName("GJ_hammerIcon_001.png");
+			utilitySpr->setScale(1.75f);
+			break;
+
 		default:
 			utilityName = "UNKNOWN";
 			utilitySpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
@@ -118,6 +125,10 @@ void UtilityWCell::onClick(CCObject*) {
 
 		case CompressLS:
 			CompressLSPopup::create()->show();
+			break;
+
+		case Seed2:
+			Seed2Popup::create()->show();
 			break;
 
 		default:

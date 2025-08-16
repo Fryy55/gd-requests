@@ -1,4 +1,4 @@
-#include "CompressLSPopup.hpp"
+#include "Seed2Popup.hpp"
 
 #include "LimitedTextArea.hpp"
 #include "utils.hpp"
@@ -7,8 +7,8 @@
 using namespace geode::prelude;
 
 
-CompressLSPopup* CompressLSPopup::create() {
-	auto ret = new CompressLSPopup;
+Seed2Popup* Seed2Popup::create() {
+	auto ret = new Seed2Popup;
 
 	if (ret->initAnchored(230.f, 160.f)) {
 		ret->autorelease();
@@ -19,9 +19,9 @@ CompressLSPopup* CompressLSPopup::create() {
 	return nullptr;
 }
 
-bool CompressLSPopup::setup() {
-	this->setTitle("Compress Level String");
-	this->setID("CompressLSPopup");
+bool Seed2Popup::setup() {
+	this->setTitle("Generate Seed2");
+	this->setID("Seed2Popup");
 
 
 
@@ -33,23 +33,23 @@ bool CompressLSPopup::setup() {
 	m_mainLayer->addChild(menu);
 
 
-	constexpr char const* lsPlaceholder = "       Level String...     ";
 	constexpr char const* clsPlaceholder = "Compressed Level String...";
+	constexpr char const* seed2Placeholder = "         Seed2         ";
 
 
 
 	constexpr float clY = 10.f;
 
-	auto lsField = LimitedTextArea::create(
+	auto clsField = LimitedTextArea::create(
 		{ 180.f, 30.f },
-		lsPlaceholder,
+		clsPlaceholder,
 		28,
 		"bigFont.fnt",
 		{ 0.f, 0.f }
 	);
-	lsField->getLabel()->setColor({ 100, 100, 100 });
-	lsField->setID("level-string-field");
-	m_mainLayer->addChildAtPosition(lsField, Anchor::Left, { 10.f, clY });
+	clsField->getLabel()->setColor({ 100, 100, 100 });
+	clsField->setID("compressed-level-string-field");
+	m_mainLayer->addChildAtPosition(clsField, Anchor::Left, { 10.f, clY });
 
 	auto pasteBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_paste.png"_spr);
 	auto pasteBtnSpr = ButtonSprite::create(
@@ -64,32 +64,32 @@ bool CompressLSPopup::setup() {
 	pasteBtnSpr->setScale(0.6f);
 	auto pasteBtn = CCMenuItemExt::createSpriteExtra(
 		pasteBtnSpr,
-		[lsField](CCMenuItemSpriteExtra*) {
-			req::utils::pasteClipboard(lsField);
-			lsField->getLabel()->setColor({ 255, 255, 255 });
+		[clsField](CCMenuItemSpriteExtra*) {
+			req::utils::pasteClipboard(clsField);
+			clsField->getLabel()->setColor({ 255, 255, 255 });
 		}
 	);
-	pasteBtn->setID("paste-ls-button");
+	pasteBtn->setID("paste-cls-button");
 	menu->addChildAtPosition(
 		pasteBtn,
 		Anchor::Right,
-		{ -20.f, lsField->getContentHeight() / 2.f + clY }
+		{ -20.f, clsField->getContentHeight() / 2.f + clY }
 	);
 
 
 
 	constexpr float clsY = 12.f;
 
-	auto clsField = LimitedTextArea::create(
+	auto seed2Field = LimitedTextArea::create(
 		{ 180.f, 30.f },
-		clsPlaceholder,
+		seed2Placeholder,
 		28,
 		"bigFont.fnt",
 		{ 0.f, 0.f }
 	);
-	clsField->getLabel()->setColor({ 100, 100, 100 });
-	clsField->setID("compressed-level-string-field");
-	m_mainLayer->addChildAtPosition(clsField, Anchor::BottomLeft, { 10.f, clsY });
+	seed2Field->getLabel()->setColor({ 100, 100, 100 });
+	seed2Field->setID("seed2-field");
+	m_mainLayer->addChildAtPosition(seed2Field, Anchor::BottomLeft, { 10.f, clsY });
 
 	auto copyBtnTopSpr = CCSprite::createWithSpriteFrameName("clipboard_copy.png"_spr);
 	auto copyBtnSpr = ButtonSprite::create(
@@ -105,51 +105,51 @@ bool CompressLSPopup::setup() {
 	copyBtnSpr->setScale(0.6f);
 	auto copyBtn = CCMenuItemExt::createSpriteExtra(
 		copyBtnSpr,
-		[clsField](CCMenuItemSpriteExtra*) {
-			if (auto cls = clsField->getText(); cls == clsPlaceholder)
+		[seed2Field](CCMenuItemSpriteExtra*) {
+			if (auto seed2 = seed2Field->getText(); seed2 == seed2Placeholder)
 				QuickNotification::create(
-					"No compressed string to copy!",
+					"No Seed2 to copy!",
 					NotificationIcon::Error,
 					0.5f
 				)->show();
 			else
-				req::utils::copyClipboard(cls, "Compressed LS");
+				req::utils::copyClipboard(seed2, "Seed2");
 		}
 	);
-	copyBtn->setID("copy-cls-button");
+	copyBtn->setID("copy-seed2-button");
 	menu->addChildAtPosition(
 		copyBtn,
 		Anchor::BottomRight,
-		{ -20.f, clsField->getContentHeight() / 2.f + clsY }
+		{ -20.f, seed2Field->getContentHeight() / 2.f + clsY }
 	);
 
 
 
-	auto compressBtnSpr = ButtonSprite::create(
-		"Compress",
+	auto generateBtnSpr = ButtonSprite::create(
+		"Generate",
 		160, 0,
 		1.f, true,
 		"bigFont.fnt",
 		"GJ_button_01.png"
 	);
-	compressBtnSpr->setScale(0.8f);
-	auto compressBtn = CCMenuItemExt::createSpriteExtra(
-		compressBtnSpr,
-		[lsField, clsField](CCMenuItemSpriteExtra*) {
-			if (auto ls = lsField->getText(); ls == lsPlaceholder) {
+	generateBtnSpr->setScale(0.8f);
+	auto generateBtn = CCMenuItemExt::createSpriteExtra(
+		generateBtnSpr,
+		[clsField, seed2Field](CCMenuItemSpriteExtra*) {
+			if (auto cls = clsField->getText(); cls == clsPlaceholder) {
 				QuickNotification::create(
-					"No string to compress!",
+					"No string to generate from!",
 					NotificationIcon::Error,
 					0.5f
 				)->show();
 			} else {
-				clsField->getLabel()->setColor({ 255, 255, 255 });
-				clsField->setText(ZipUtils::compressString(ls, false, 0));
+				seed2Field->getLabel()->setColor({ 255, 255, 255 });
+				seed2Field->setText(ZipUtils::base64EncodeEnc(cls, "41274"));
 			}
 		}
 	);
-	compressBtn->setID("compress-button");
-	menu->addChildAtPosition(compressBtn, Anchor::Center, { 0.f, -14.f });
+	generateBtn->setID("generate-button");
+	menu->addChildAtPosition(generateBtn, Anchor::Center, { 0.f, -14.f });
 
 	return true;
 }
