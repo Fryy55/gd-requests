@@ -7,7 +7,8 @@ class UtilityWCell final : public CCMenuItemSpriteExtra {
 public:
 	enum Utility : std::uint8_t {
 		GJP2,
-		LevelString
+		LevelString,
+		CompressLS
 	};
 
 	static UtilityWCell* create(Utility utility);

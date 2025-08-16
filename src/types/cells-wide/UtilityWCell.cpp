@@ -2,6 +2,7 @@
 
 #include "RequestsManager.hpp"
 #include "QuickNotification.hpp"
+#include "CompressLSPopup.hpp"
 
 using namespace geode::prelude;
 
@@ -40,27 +41,37 @@ bool UtilityWCell::init(Utility utility) {
 
 	char const* utilityName;
 	CCSprite* utilitySpr;
-	float utilitySprScale = 1.f;
 
 	switch (m_utility) {
 		case GJP2:
 			utilityName = "GJP2";
 			utilitySpr = CCSprite::createWithSpriteFrameName("GJLargeLock_001.png");
-			utilitySprScale = 0.8f;
+			utilitySpr->setScale(0.8f);
 			break;
 
 		case LevelString:
 			utilityName = "Level String";
 			utilitySpr = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
-			utilitySprScale = 1.5f;
+			utilitySpr->setScale(1.5f);
 
 			updateLevelStringBGColor(RequestsManager::get()->getCopyLevelStringValue());
 			break;
 
+		case CompressLS: {
+			utilityName = "Compress\nLevel String";
+			utilitySpr = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
+			utilitySpr->setScale(1.5f);
+			
+			auto lockSpr = CCSprite::createWithSpriteFrameName("GJ_lock_001.png");
+			lockSpr->CCNode::setPosition(33.f, 5.f);
+			lockSpr->setScale(0.5f);
+			utilitySpr->addChild(lockSpr);
+		} break;
+
 		default:
 			utilityName = "UNKNOWN";
 			utilitySpr = CCSprite::createWithSpriteFrameName("GJ_deleteIcon_001.png");
-			utilitySprScale = 2.f;
+			utilitySpr->setScale(2.f);
 			break;
 	}
 
@@ -72,7 +83,6 @@ bool UtilityWCell::init(Utility utility) {
 	nameLabel->setID("name-label");
 	this->addChildAtPosition(nameLabel, Anchor::Top, { 0.f, -15.f });
 
-	utilitySpr->setScale(utilitySprScale);
 	utilitySpr->setID("info-sprite");
 	this->addChildAtPosition(utilitySpr, Anchor::Center, { 0.f, -10.f });
 
@@ -106,6 +116,10 @@ void UtilityWCell::onClick(CCObject*) {
 			)->show();
 		} break;
 
+		case CompressLS:
+			CompressLSPopup::create()->show();
+			break;
+
 		default:
 			QuickNotification::create(
 				"  Unknown utility!\n"
@@ -121,6 +135,7 @@ void UtilityWCell::onClick(CCObject*) {
 
 std::string& UtilityWCell::nameToID(std::string& str) const {
 	string::replaceIP(str, " ", "-");
+	string::replaceIP(str, "\n", "-");
 
 	return string::toLowerIP(str);
 }

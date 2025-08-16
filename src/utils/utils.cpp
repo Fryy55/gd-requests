@@ -68,6 +68,13 @@ bool req::utils::validateString(
 	return true;
 }
 
+void req::utils::pasteClipboard(CCLabelBMFont* label) {
+	label->setString(clipboard::read().c_str());
+	QuickNotification::create("Clipboard pasted.", NotificationIcon::None, 0.5f)->show();
+
+	return;
+}
+
 void req::utils::pasteClipboard(TextInput* textInput) {
 	textInput->setString(clipboard::read());
 	QuickNotification::create("Clipboard pasted.", NotificationIcon::None, 0.5f)->show();
@@ -75,9 +82,16 @@ void req::utils::pasteClipboard(TextInput* textInput) {
 	return;
 }
 
-void req::utils::copyClipboard(std::string const& string, std::string_view content) {
+void req::utils::pasteClipboard(LimitedTextArea* field) {
+	field->setText(clipboard::read());
+	QuickNotification::create("Clipboard pasted.", NotificationIcon::None, 0.5f)->show();
+
+	return;
+}
+
+void req::utils::copyClipboard(std::string const& string, std::string_view contentName) {
 	clipboard::write(string);
-	QuickNotification::create(fmt::format("{} copied to clipboard.", content))->show();
+	QuickNotification::create(fmt::format("{} copied to clipboard.", contentName))->show();
 
 	return;
 }

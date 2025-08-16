@@ -23,9 +23,12 @@ class $modify(LevelSelectLayer) {
 			),
 			[this](CCMenuItemSpriteExtra*) {
 				req::utils::copyClipboard(
-					static_cast<LevelPage*>(
-						m_scrollLayer->getPage(m_scrollLayer->m_page)
-					)->m_level->m_levelString,
+					GameLevelManager::get()->getMainLevel(
+						static_cast<LevelPage*>(
+							m_scrollLayer->getPage(m_scrollLayer->m_page)
+						)->m_level->m_levelID,
+						false
+					)->m_levelString,
 					"Level string"
 				);
 			}

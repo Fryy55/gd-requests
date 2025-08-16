@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Geode/ui/TextInput.hpp>
+#include "LimitedTextArea.hpp"
 
 
 namespace req::utils {
@@ -16,6 +17,8 @@ namespace req::utils {
 		std::optional<std::string_view> oldKey = std::nullopt
 	);
 
+	void pasteClipboard(cocos2d::CCLabelBMFont* label);
 	void pasteClipboard(geode::TextInput* textInput);
-	void copyClipboard(std::string const& string, std::string_view content);
+	void pasteClipboard(LimitedTextArea* field);
+	void copyClipboard(std::string const& string, std::string_view contentName);
 }
